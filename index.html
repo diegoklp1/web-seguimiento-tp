@@ -982,26 +982,60 @@ const MODULES = [
 ];
 
 /* ═══════════════ STATE ═══════════════ */
-let taskStatus = {};
-try { taskStatus = JSON.parse(localStorage.getItem('caravana_status') || '{}'); } catch(e) {}
+/* ═══════════════ CONFIGURACIÓN NUBE ═══════════════ */
+const BIN_ID = '69ed493e856a68218971aba9';
+const API_KEY = '$2a$10$.gdzrdupyWto3WJS3vXUhOYHfM53jYOfY/lg7wzrS42pBG53UtSUu'; // Usar X-Master-Key o X-Access-Key
+const URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
-function saveStatus() {
-  try { localStorage.setItem('caravana_status', JSON.stringify(taskStatus)); } catch(e) {}
+let taskStatus = {};
+
+// 1. CARGAR DATOS DESDE LA NUBE AL INICIAR
+async function loadStatusFromCloud() {
+  try {
+    const res = await fetch(`${URL}/latest`, {
+      headers: { 'X-Master-Key': API_KEY }
+    });
+    const data = await res.json();
+    taskStatus = data.record || {};
+    renderAll();
+  } catch (e) {
+    console.error("Error cargando datos:", e);
+  }
 }
 
-function getStatus(id) { return taskStatus[id] || 'todo'; }
+// 2. GUARDAR DATOS EN LA NUBE
+async function saveStatusToCloud() {
+  try {
+    await fetch(URL, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Master-Key': API_KEY
+      },
+      body: JSON.stringify(taskStatus)
+    });
+  } catch (e) {
+    console.error("Error guardando datos:", e);
+  }
+}
+
+// 3. ACTUALIZAR LAS FUNCIONES EXISTENTES
 function cycleStatus(id) {
   const s = getStatus(id);
   taskStatus[id] = s === 'todo' ? 'doing' : s === 'doing' ? 'done' : 'todo';
-  saveStatus();
   renderAll();
+  saveStatusToCloud(); // Se guarda automáticamente al cambiar
 }
+
 function setStatus(id, val) {
   taskStatus[id] = val;
-  saveStatus();
   renderAll();
+  saveStatusToCloud(); // Se guarda automáticamente al cambiar
   if (currentModal === id) openModal(id);
 }
+
+// Inicializar cargando desde la nube
+loadStatusFromCloud();
 
 /* ═══════════════ RENDER ═══════════════ */
 
