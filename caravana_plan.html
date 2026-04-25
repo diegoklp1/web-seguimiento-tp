@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caravana del Desierto — Plan de Trabajo</title>
+<style>
+  /* ── RESET & BASE ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg0: #0f1117;
+    --bg1: #161b27;
+    --bg2: #1e2535;
+    --bg3: #252d40;
+    --bg4: #2e3854;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --text0: #f0f2f8;
+    --text1: #b8bdd0;
+    --text2: #7a82a0;
+    --text3: #4e5570;
+    /* Integrante colors */
+    --c1: #3b82f6; --c1bg: rgba(59,130,246,0.12); --c1dim: rgba(59,130,246,0.22);
+    --c2: #10b981; --c2bg: rgba(16,185,129,0.12); --c2dim: rgba(16,185,129,0.22);
+    --c3: #f59e0b; --c3bg: rgba(245,158,11,0.12); --c3dim: rgba(245,158,11,0.22);
+    --c4: #ec4899; --c4bg: rgba(236,72,153,0.12); --c4dim: rgba(236,72,153,0.22);
+    /* Status */
+    --done-bg: rgba(16,185,129,0.15); --done-border: rgba(16,185,129,0.4); --done-text: #34d399;
+    --doing-bg: rgba(245,158,11,0.15); --doing-border: rgba(245,158,11,0.4); --doing-text: #fbbf24;
+    --todo-bg: transparent; --todo-border: var(--border2); --todo-text: var(--text2);
+    /* Risk */
+    --danger: #ef4444; --danger-bg: rgba(239,68,68,0.12);
+    --warn: #f59e0b;   --warn-bg:   rgba(245,158,11,0.12);
+    --ok:   #10b981;   --ok-bg:     rgba(16,185,129,0.12);
+    --font: 'Segoe UI', system-ui, sans-serif;
+  }
+  html { font-size: 15px; }
+  body {
+    font-family: var(--font);
+    background: var(--bg0);
+    color: var(--text0);
+    min-height: 100vh;
+    line-height: 1.5;
+  }
+  code {
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    background: var(--bg3);
+    color: #93c5fd;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 0.82em;
+  }
+
+  /* ── LAYOUT ── */
+  .app { max-width: 960px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  /* ── HEADER ── */
+  .app-header { margin-bottom: 28px; }
+  .app-header h1 { font-size: 1.5rem; font-weight: 700; color: var(--text0); letter-spacing: -0.02em; }
+  .app-header p  { font-size: 0.85rem; color: var(--text2); margin-top: 4px; }
+  .header-meta { display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap; }
+  .meta-chip { font-size: 11px; background: var(--bg2); border: 0.5px solid var(--border2); border-radius: 20px; padding: 3px 10px; color: var(--text2); }
+
+  /* ── TABS ── */
+  .tabs { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 24px; background: var(--bg1); border: 0.5px solid var(--border); border-radius: 12px; padding: 5px; }
+  .tab { font-size: 13px; font-weight: 500; padding: 7px 16px; border-radius: 8px; border: none; cursor: pointer; background: transparent; color: var(--text2); transition: all .15s; }
+  .tab:hover:not(.active) { background: var(--bg2); color: var(--text1); }
+  .tab.active { background: var(--bg3); color: var(--text0); box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+
+  /* ── VIEWS ── */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ── PROGRESS BAR GLOBAL ── */
+  .global-progress { background: var(--bg1); border: 0.5px solid var(--border); border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; }
+  .gp-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .gp-label { font-size: 12px; color: var(--text2); font-weight: 500; }
+  .gp-nums  { font-size: 12px; color: var(--text1); }
+  .progress-track { height: 6px; background: var(--bg3); border-radius: 3px; overflow: hidden; }
+  .progress-fill  { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #10b981, #3b82f6); transition: width .4s ease; }
+  .gp-stats { display: flex; gap: 16px; margin-top: 10px; flex-wrap: wrap; }
+  .gp-stat  { font-size: 11px; color: var(--text2); display: flex; align-items: center; gap: 5px; }
+  .stat-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* ── INT GRID ── */
+  .int-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 620px) { .int-grid { grid-template-columns: 1fr; } }
+
+  .int-card { background: var(--bg1); border: 0.5px solid var(--border2); border-radius: 14px; overflow: hidden; }
+  .int-header { padding: 14px 16px; display: flex; align-items: center; gap: 12px; border-bottom: 0.5px solid var(--border); }
+  .int-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+  .av1 { background: var(--c1dim); color: var(--c1); }
+  .av2 { background: var(--c2dim); color: var(--c2); }
+  .av3 { background: var(--c3dim); color: var(--c3); }
+  .av4 { background: var(--c4dim); color: var(--c4); }
+
+  .int-info {}
+  .int-name   { font-size: 14px; font-weight: 600; color: var(--text0); }
+  .int-module { font-size: 11px; color: var(--text2); margin-top: 2px; }
+  .int-prog   { margin-left: auto; text-align: right; }
+  .int-prog-num { font-size: 12px; font-weight: 600; color: var(--text1); }
+  .int-prog-bar { margin-top: 4px; width: 60px; height: 4px; background: var(--bg3); border-radius: 2px; overflow: hidden; }
+  .int-prog-fill { height: 100%; border-radius: 2px; transition: width .4s; }
+  .fill1 { background: var(--c1); }
+  .fill2 { background: var(--c2); }
+  .fill3 { background: var(--c3); }
+  .fill4 { background: var(--c4); }
+
+  .int-body { padding: 6px 0 8px; }
+
+  /* ── TASK ROWS ── */
+  .task-row { display: flex; align-items: flex-start; gap: 10px; padding: 9px 16px; cursor: pointer; transition: background .12s; border-radius: 0; }
+  .task-row:hover { background: var(--bg2); }
+  .task-left { display: flex; align-items: flex-start; gap: 8px; flex: 1; min-width: 0; }
+  .task-status-btn { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--border2); flex-shrink: 0; margin-top: 1px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px; transition: all .15s; background: transparent; }
+  .task-status-btn:hover { border-color: var(--text2); }
+  .task-status-btn.done  { background: var(--done-bg);  border-color: var(--done-border);  color: var(--done-text);  }
+  .task-status-btn.doing { background: var(--doing-bg); border-color: var(--doing-border); color: var(--doing-text); }
+
+  .task-content { flex: 1; min-width: 0; }
+  .task-title { font-size: 13px; color: var(--text0); line-height: 1.35; font-weight: 500; }
+  .task-title.done  { text-decoration: line-through; color: var(--text3); }
+  .task-title.doing { color: var(--doing-text); }
+  .task-badges { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+  .badge { font-size: 10px; padding: 1px 7px; border-radius: 10px; font-weight: 500; }
+  .badge-dep    { background: var(--doing-bg); color: var(--doing-text); }
+  .badge-par    { background: var(--bg3); color: var(--text2); }
+  .badge-block  { background: var(--danger-bg); color: var(--danger); }
+  .hours-chip { font-size: 11px; color: var(--text3); white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
+  .info-btn { font-size: 10px; color: var(--text3); background: var(--bg3); border: 0.5px solid var(--border); border-radius: 6px; padding: 2px 6px; flex-shrink: 0; cursor: pointer; margin-top: 1px; white-space: nowrap; transition: all .12s; }
+  .info-btn:hover { color: var(--text1); border-color: var(--border2); }
+
+  /* ── ESPECIFICACIÓN DE TAREA (NUEVO) ── */
+  .spec-grid { display: grid; gap: 16px; margin-top: 10px; }
+  .spec-item { background: var(--bg2); border-radius: 10px; padding: 14px; border: 0.5px solid var(--border2); }
+  .spec-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .spec-icon { font-size: 14px; }
+  .spec-label { font-size: 11px; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: .05em; }
+  .spec-text { font-size: 13px; color: var(--text1); line-height: 1.6; }
+  .spec-text code { background: var(--bg4); color: var(--text0); }
+  /* ── PASO 0 NOTE ── */
+  .paso0 { background: var(--doing-bg); border: 0.5px solid var(--doing-border); border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; font-size: 12px; color: var(--doing-text); line-height: 1.55; }
+
+  /* ── LEGEND ── */
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text2); }
+  .legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+
+  /* ── MODAL ── */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity .2s; }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal { background: var(--bg1); border: 0.5px solid var(--border2); border-radius: 16px; max-width: 560px; width: 100%; max-height: 85vh; overflow-y: auto; box-shadow: 0 24px 64px rgba(0,0,0,0.6); }
+  .modal-header { padding: 20px 24px 14px; border-bottom: 0.5px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; position: sticky; top: 0; background: var(--bg1); z-index: 1; }
+  .modal-title { font-size: 15px; font-weight: 700; color: var(--text0); line-height: 1.3; }
+  .modal-sub   { font-size: 12px; color: var(--text2); margin-top: 3px; }
+  .modal-close { background: var(--bg3); border: none; color: var(--text2); width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all .12s; }
+  .modal-close:hover { color: var(--text0); background: var(--bg4); }
+  .modal-body { padding: 20px 24px; }
+  .modal-section { margin-bottom: 18px; }
+  .modal-section:last-child { margin-bottom: 0; }
+  .modal-section h3 { font-size: 11px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
+  .modal-desc { font-size: 13px; color: var(--text1); line-height: 1.6; }
+  .modal-quote { background: var(--bg2); border-left: 3px solid var(--c3); border-radius: 0 8px 8px 0; padding: 10px 14px; font-size: 12px; color: var(--text1); line-height: 1.6; margin-top: 6px; font-style: italic; }
+  .modal-quote + .modal-quote { margin-top: 8px; }
+  .status-selector { display: flex; gap: 8px; margin-top: 4px; }
+  .status-opt { font-size: 12px; padding: 5px 14px; border-radius: 8px; border: 1.5px solid var(--border2); cursor: pointer; color: var(--text2); background: transparent; font-weight: 500; transition: all .15s; }
+  .status-opt:hover { border-color: var(--border2); background: var(--bg2); }
+  .status-opt.sel-todo  { border-color: var(--border2); color: var(--text2); background: var(--bg2); }
+  .status-opt.sel-doing { border-color: var(--doing-border); color: var(--doing-text); background: var(--doing-bg); }
+  .status-opt.sel-done  { border-color: var(--done-border);  color: var(--done-text);  background: var(--done-bg); }
+
+  /* ── MÓDULOS VIEW ── */
+  .module-diagram { margin-bottom: 28px; }
+  .md-title { font-size: 12px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 14px; }
+  .md-flow { display: flex; flex-direction: column; align-items: center; gap: 0; }
+  .md-row { display: flex; gap: 12px; align-items: flex-start; justify-content: center; flex-wrap: wrap; }
+  .md-box { background: var(--bg2); border: 0.5px solid var(--border2); border-radius: 10px; padding: 10px 16px; text-align: center; min-width: 140px; }
+  .md-box.m1 { border-color: rgba(59,130,246,0.4); }
+  .md-box.m2 { border-color: rgba(16,185,129,0.4); }
+  .md-box.m3 { border-color: rgba(245,158,11,0.4); }
+  .md-box.m4 { border-color: rgba(236,72,153,0.4); }
+  .md-box.m5 { border-color: rgba(139,92,246,0.4); }
+  .md-box.m6 { border-color: rgba(107,114,128,0.4); }
+  .md-box-label { font-size: 11px; font-weight: 700; letter-spacing:.03em; }
+  .md-box.m1 .md-box-label { color: var(--c1); }
+  .md-box.m2 .md-box-label { color: var(--c2); }
+  .md-box.m3 .md-box-label { color: var(--c3); }
+  .md-box.m4 .md-box-label { color: var(--c4); }
+  .md-box.m5 .md-box-label { color: #a78bfa; }
+  .md-box.m6 .md-box-label { color: #9ca3af; }
+  .md-box-name { font-size: 12px; font-weight: 600; color: var(--text0); margin: 3px 0; line-height: 1.3; }
+  .md-box-hours { font-size: 10px; color: var(--text3); }
+  .md-arrow { font-size: 18px; color: var(--text3); line-height: 1; padding: 4px 0; text-align: center; }
+  .md-row-parallel { display: flex; gap: 20px; align-items: stretch; }
+  .md-arrow-h { font-size: 14px; color: var(--text3); display: flex; align-items: center; }
+
+  /* MODULE CARDS */
+  .module-cards { display: flex; flex-direction: column; gap: 12px; }
+  .module-card { background: var(--bg1); border: 0.5px solid var(--border2); border-radius: 12px; overflow: hidden; }
+  .module-card-header { padding: 12px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: background .12s; }
+  .module-card-header:hover { background: var(--bg2); }
+  .module-badge { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 6px; flex-shrink: 0; }
+  .mb-m1 { background: var(--c1dim); color: var(--c1); }
+  .mb-m2 { background: var(--c2dim); color: var(--c2); }
+  .mb-m3 { background: var(--c3dim); color: var(--c3); }
+  .mb-m4 { background: var(--c4dim); color: var(--c4); }
+  .mb-m5 { background: rgba(139,92,246,0.18); color: #a78bfa; }
+  .mb-m6 { background: rgba(107,114,128,0.18); color: #9ca3af; }
+  .module-name { font-size: 14px; font-weight: 600; color: var(--text0); flex: 1; }
+  .module-hours { font-size: 11px; color: var(--text2); flex-shrink: 0; }
+  .module-chevron { color: var(--text3); font-size: 12px; transition: transform .2s; flex-shrink: 0; }
+  .module-card.open .module-chevron { transform: rotate(180deg); }
+  .module-body { display: none; padding: 0 16px 14px; border-top: 0.5px solid var(--border); }
+  .module-card.open .module-body { display: block; }
+  .module-item { font-size: 12px; color: var(--text1); line-height: 1.55; padding: 6px 0; border-bottom: 0.5px solid var(--border); display: flex; gap: 8px; }
+  .module-item:last-child { border-bottom: none; }
+  .module-item::before { content: '›'; color: var(--text3); flex-shrink: 0; }
+  .module-files { margin-top: 10px; padding: 8px 12px; background: var(--bg2); border-radius: 8px; font-size: 11px; color: var(--text2); }
+  .module-files span { color: #93c5fd; font-family: 'Cascadia Code','Fira Code',monospace; }
+/* ── MODULE QUOTES (NUEVO) ── */
+  .module-quotes-wrapper { margin-top: 14px; border-top: 0.5px dashed var(--border2); padding-top: 10px; }
+  .module-quotes-summary { font-size: 11px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: .05em; cursor: pointer; display: flex; align-items: center; gap: 6px; user-select: none; outline: none; }
+  .module-quotes-summary::-webkit-details-marker { display: none; }
+  .module-quotes-summary::before { content: '▶'; font-size: 9px; transition: transform .2s; }
+  details[open] .module-quotes-summary::before { transform: rotate(90deg); }
+  .module-quotes-content { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .module-quote-item { background: var(--bg2); border-left: 2px solid var(--c3); border-radius: 0 6px 6px 0; padding: 10px 14px; font-size: 11.5px; color: var(--text1); font-style: italic; line-height: 1.5; }
+  
+  /* ── SPRINTS VIEW ── */
+  .sprint-overflow { overflow-x: auto; }
+  .sprint-table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 540px; }
+  .sprint-table th { font-size: 11px; font-weight: 600; color: var(--text2); text-align: left; padding: 8px 12px; border-bottom: 0.5px solid var(--border2); background: var(--bg1); white-space: nowrap; }
+  .sprint-table td { padding: 10px 12px; border-bottom: 0.5px solid var(--border); vertical-align: top; color: var(--text1); }
+  .sprint-table tr:last-child td { border-bottom: none; }
+  .sprint-table tr:hover td { background: var(--bg1); }
+  .sprint-week  { font-weight: 700; color: var(--text0); font-size: 12px; white-space: nowrap; }
+  .sprint-dates { font-size: 10px; color: var(--text3); margin-top: 2px; }
+  .sprint-hito  { font-size: 12px; font-weight: 600; color: var(--text0); }
+  .sprint-note  { font-size: 11px; color: var(--text2); margin-top: 3px; line-height: 1.45; }
+  .sprint-tag   { font-size: 10px; padding: 2px 8px; border-radius: 8px; display: inline-block; margin: 2px 2px 0 0; font-weight: 500; }
+  .st1 { background: var(--c1bg); color: var(--c1); }
+  .st2 { background: var(--c2bg); color: var(--c2); }
+  .st3 { background: var(--c3bg); color: var(--c3); }
+  .st4 { background: var(--c4bg); color: var(--c4); }
+  .st-all { background: var(--bg3); color: var(--text2); }
+  .sprint-hito-ok { color: var(--done-text); }
+
+  /* ── RISKS VIEW ── */
+  .risk-card { background: var(--bg1); border: 0.5px solid var(--border2); border-radius: 12px; padding: 16px; margin-bottom: 10px; display: flex; gap: 14px; align-items: flex-start; }
+  .risk-icon { font-size: 18px; flex-shrink: 0; line-height: 1; margin-top: 1px; }
+  .risk-sev { font-size: 10px; padding: 2px 8px; border-radius: 8px; display: inline-block; margin-bottom: 6px; font-weight: 600; }
+  .sev-high { background: var(--danger-bg); color: var(--danger); }
+  .sev-med  { background: var(--warn-bg);   color: var(--warn); }
+  .sev-low  { background: var(--ok-bg);     color: var(--ok); }
+  .risk-title { font-size: 13px; font-weight: 600; color: var(--text0); margin-bottom: 6px; }
+  .risk-body  { font-size: 12px; color: var(--text1); line-height: 1.6; }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg0); }
+  ::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="app-header">
+    <h1>🐪 Caravana del Desierto — Plan de Trabajo</h1>
+    <p>Algoritmos y Estructuras de Datos · UNLaM · Comisiones 02-3300 / 03-3600</p>
+    <div class="header-meta">
+      <span class="meta-chip">📅 Inicio: 25 abr 2026</span>
+      <span class="meta-chip">🎯 Meta propia: 10 jun 2026</span>
+      <span class="meta-chip">📬 Entrega real: 17 jun 2026</span>
+      <span class="meta-chip">👥 4 integrantes · 3–8 hs/semana</span>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('progreso')">Progreso</button>
+    <button class="tab" onclick="showTab('modulos')">Módulos</button>
+    <button class="tab" onclick="showTab('sprints')">Sprints</button>
+    <button class="tab" onclick="showTab('riesgos')">Riesgos</button>
+  </div>
+
+  <!-- ═══════════════════════════════ TAB: PROGRESO ═══════════════════════════════ -->
+  <div id="tab-progreso" class="view active">
+
+    <!-- Global progress -->
+    <div class="global-progress">
+      <div class="gp-top">
+        <span class="gp-label">Progreso global del proyecto</span>
+        <span class="gp-nums" id="gp-nums">0 / 20 tareas</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="gp-bar" style="width:0%"></div></div>
+      <div class="gp-stats">
+        <span class="gp-stat"><span class="stat-dot" style="background:var(--done-text)"></span><span id="stat-done">0 hechas</span></span>
+        <span class="gp-stat"><span class="stat-dot" style="background:var(--doing-text)"></span><span id="stat-doing">0 en progreso</span></span>
+        <span class="gp-stat"><span class="stat-dot" style="background:var(--bg4)"></span><span id="stat-todo">20 pendientes</span></span>
+      </div>
+    </div>
+
+    <div class="paso0">
+      ⚠ <strong>Paso 0 — semana 1, todos:</strong> Reunión de 1h para acordar <code>tipos.h</code> — los structs compartidos (<code>NodoCasilla</code>, <code>Jugador</code>, <code>Bandido</code>). A partir de ahí cada uno trabaja de forma independiente usando mocks propios si necesita algo del otro.
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c1)"></div>I1 — LCDE + Tablero</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c2)"></div>I2 — Cola + Juego</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c3)"></div>I3 — ABB + Persistencia</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c4)"></div>I4 — Menú + Integración</div>
+      <div class="legend-item"><div class="stat-dot" style="background:var(--done-text); width:9px;height:9px;border-radius:50%;"></div>Hecho</div>
+      <div class="legend-item"><div class="stat-dot" style="background:var(--doing-text); width:9px;height:9px;border-radius:50%;"></div>En progreso</div>
+    </div>
+
+    <div class="int-grid" id="int-grid"></div>
+  </div>
+
+  <!-- ═══════════════════════════════ TAB: MÓDULOS ═══════════════════════════════ -->
+  <div id="tab-modulos" class="view">
+
+    <div class="module-diagram">
+      <div class="md-title">Diagrama de dependencias</div>
+      <div class="md-flow">
+        <div class="md-row">
+          <div class="md-box m1">
+            <div class="md-box-label">M1</div>
+            <div class="md-box-name">Estructuras Base</div>
+            <div class="md-box-hours">20–25 hs</div>
+          </div>
+        </div>
+        <div class="md-arrow">↓</div>
+        <div class="md-row">
+          <div class="md-row-parallel">
+            <div class="md-box m2">
+              <div class="md-box-label">M2</div>
+              <div class="md-box-name">Lógica del Tablero</div>
+              <div class="md-box-hours">10–15 hs</div>
+            </div>
+            <div class="md-arrow-h">·····</div>
+            <div class="md-box m3">
+              <div class="md-box-label">M3</div>
+              <div class="md-box-name">Persistencia</div>
+              <div class="md-box-hours">15–20 hs</div>
+            </div>
+          </div>
+        </div>
+        <div class="md-arrow">↓</div>
+        <div class="md-row">
+          <div class="md-box m4">
+            <div class="md-box-label">M4</div>
+            <div class="md-box-name">Lógica de Juego</div>
+            <div class="md-box-hours">20–25 hs</div>
+          </div>
+        </div>
+        <div class="md-arrow">↓</div>
+        <div class="md-row">
+          <div class="md-box m5">
+            <div class="md-box-label">M5</div>
+            <div class="md-box-name">Menú e Interfaz</div>
+            <div class="md-box-hours">8–12 hs</div>
+          </div>
+        </div>
+        <div class="md-arrow">↓</div>
+        <div class="md-row">
+          <div class="md-box m6">
+            <div class="md-box-label">M6</div>
+            <div class="md-box-name">Integración y Pulido</div>
+            <div class="md-box-hours">10–15 hs</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="module-cards" id="module-cards"></div>
+  </div>
+
+  <!-- ═══════════════════════════════ TAB: SPRINTS ═══════════════════════════════ -->
+  <div id="tab-sprints" class="view">
+    <div class="sprint-overflow">
+    <table class="sprint-table">
+      <thead>
+        <tr>
+          <th>Semana</th>
+          <th>Hito</th>
+          <th>I1</th>
+          <th>I2</th>
+          <th>I3</th>
+          <th>I4</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div class="sprint-week">S1</div><div class="sprint-dates">25 abr – 1 may</div></td>
+          <td><div class="sprint-hito">Setup + TDAs base</div><div class="sprint-note">Reunión tipos.h · GitHub · cada uno arranca su TDA</div></td>
+          <td><span class="sprint-tag st1">LCDE impl.</span><span class="sprint-tag st1">GitHub setup</span></td>
+          <td><span class="sprint-tag st2">Cola impl.</span><span class="sprint-tag st2">Dado virtual</span></td>
+          <td><span class="sprint-tag st3">ABB impl.</span></td>
+          <td><span class="sprint-tag st4">Menú básico</span></td>
+        </tr>
+        <tr>
+          <td><div class="sprint-week">S2</div><div class="sprint-dates">2 – 8 may</div></td>
+          <td><div class="sprint-hito">TDAs probados</div><div class="sprint-note">Cada uno tiene su módulo con test propio. I1 publica LCDE.</div></td>
+          <td><span class="sprint-tag st1">Test LCDE</span><span class="sprint-tag st1">Leer config.txt</span></td>
+          <td><span class="sprint-tag st2">Movimiento jugador</span></td>
+          <td><span class="sprint-tag st3">Serializar ABB</span></td>
+          <td><span class="sprint-tag st4">Visualizar tablero</span></td>
+        </tr>
+        <tr>
+          <td><div class="sprint-week">S3</div><div class="sprint-dates">9 – 15 may</div></td>
+          <td><div class="sprint-hito">Tablero + efectos</div><div class="sprint-note">LCDE compartida. I2 usa LCDE real. I3 persiste.</div></td>
+          <td><span class="sprint-tag st1">Generar tablero</span><span class="sprint-tag st1">Validar escenario</span></td>
+          <td><span class="sprint-tag st2">Efectos por casilla</span></td>
+          <td><span class="sprint-tag st3">Alta jugadores</span><span class="sprint-tag st3">Historial partidas</span></td>
+          <td><span class="sprint-tag st4">Inicio integración</span></td>
+        </tr>
+        <tr>
+          <td><div class="sprint-week">S4</div><div class="sprint-dates">16 – 22 may</div></td>
+          <td><div class="sprint-hito">Partida jugable</div><div class="sprint-note">Partida completa sin bandidos. I4 integra todo hasta este punto.</div></td>
+          <td><span class="sprint-tag st1">caravana.txt</span><span class="sprint-tag st1">Apoyo integración</span></td>
+          <td><span class="sprint-tag st2">Bandidos + encolado</span></td>
+          <td><span class="sprint-tag st3">Función ranking</span></td>
+          <td><span class="sprint-tag st4">main.c integración</span></td>
+        </tr>
+        <tr>
+          <td><div class="sprint-week">S5</div><div class="sprint-dates">23 – 29 may</div></td>
+          <td><div class="sprint-hito">Juego completo</div><div class="sprint-note">Bandidos activos. Persistencia completa. Ranking visible.</div></td>
+          <td><span class="sprint-tag st1">Buffer / apoyo</span></td>
+          <td><span class="sprint-tag st2">Registro FX/BX</span></td>
+          <td><span class="sprint-tag st3">Buffer / apoyo</span></td>
+          <td><span class="sprint-tag st4">Integración total</span></td>
+        </tr>
+        <tr>
+          <td><div class="sprint-week">S6</div><div class="sprint-dates">30 may – 5 jun</div></td>
+          <td><div class="sprint-hito sprint-hito-ok">✓ Meta: versión final</div><div class="sprint-note">0 warnings. Tests de borde. README completo.</div></td>
+          <td colspan="4" style="text-align:center"><span class="sprint-tag st-all">Todos: pruebas · correcciones · documentación · commits en GitHub</span></td>
+        </tr>
+        <tr>
+          <td><div class="sprint-week">S7</div><div class="sprint-dates">6 – 17 jun</div></td>
+          <td><div class="sprint-hito">Margen de error</div><div class="sprint-note">Entrega real: 17/06. Buffer para imprevistos + repaso para defensa.</div></td>
+          <td colspan="4" style="text-align:center;color:var(--text3);font-size:11px">Repaso individual · defensa oral 24/06 y 08/07 · entrega en MIeL</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ TAB: RIESGOS ═══════════════════════════════ -->
+  <div id="tab-riesgos" class="view">
+    <div class="risk-card">
+      <div class="risk-icon">🔴</div>
+      <div>
+        <div class="risk-sev sev-high">Alto</div>
+        <div class="risk-title">Integración tardía entre módulos</div>
+        <div class="risk-body">Si I4 espera a que todos terminen para integrar, la semana 5 será caos. I4 trabaja con stubs desde el día 1 y los reemplaza a medida que cada módulo esté listo. La integración es incremental, no un evento único al final.</div>
+      </div>
+    </div>
+    <div class="risk-card">
+      <div class="risk-icon">🔴</div>
+      <div>
+        <div class="risk-sev sev-high">Alto</div>
+        <div class="risk-title">Rebote en S mal implementado</div>
+        <div class="risk-body">La lógica de "si el jugador sobrepasa S, retrocede las posiciones sobrantes" en una lista circular es la parte más propensa a bugs infinitos. I2 debe probarla exhaustivamente: dado=1 justo en S, dado=6 desde el nodo anterior a S, dado que da exactamente S. Reservar tiempo extra aquí.</div>
+      </div>
+    </div>
+    <div class="risk-card">
+      <div class="risk-icon">🟡</div>
+      <div>
+        <div class="risk-sev sev-med">Medio</div>
+        <div class="risk-title">Serialización del ABB</div>
+        <div class="risk-body">Guardar y reconstruir el árbol en binario (preorden + centinela) es conceptualmente simple pero los bugs de punteros en C son difíciles de debuggear. I3 debe hacer pruebas de ida y vuelta (guardar → recargar → comparar) desde el día 1 de esa tarea.</div>
+      </div>
+    </div>
+    <div class="risk-card">
+      <div class="risk-icon">🟡</div>
+      <div>
+        <div class="risk-sev sev-med">Medio</div>
+        <div class="risk-title">Colisión bandido-jugador al cruzarse</div>
+        <div class="risk-body">El enunciado dice que el bandido afecta al jugador solo si quedan en la misma posición al finalizar el movimiento. Si un bandido "cruza" al jugador sin coincidir, no ocurre nada. Definir este criterio en equipo antes de que I2 lo implemente para evitar interpretaciones contradictorias.</div>
+      </div>
+    </div>
+    <div class="risk-card">
+      <div class="risk-icon">🟡</div>
+      <div>
+        <div class="risk-sev sev-med">Medio</div>
+        <div class="risk-title">Defensa oral: cada uno debe entender todo el proyecto</div>
+        <div class="risk-body">La cátedra pregunta individualmente. No alcanza con haber hecho el propio módulo. Todos deben poder explicar por qué se usa LCDE y no array, cómo funciona el encolado de movimientos, cómo se serializa el ABB. Dedicar al menos 2h en la semana 6 a revisar el código de los compañeros.</div>
+      </div>
+    </div>
+    <div class="risk-card">
+      <div class="risk-icon">🟡</div>
+      <div>
+        <div class="risk-sev sev-med">Medio</div>
+        <div class="risk-title">Escenario sin solución posible</div>
+        <div class="risk-body">El enunciado exige que cada tablero generado tenga solución. I1 debe implementar una validación mínima: que exista un nodo S, que el número de posiciones sea mayor al de bandidos, y que no haya configuraciones que bloqueen todo el tablero. Sin esto el juego puede generar partidas imposibles.</div>
+      </div>
+    </div>
+    <div class="risk-card">
+      <div class="risk-icon">🟢</div>
+      <div>
+        <div class="risk-sev sev-low">Bajo</div>
+        <div class="risk-title">Commits desiguales en GitHub</div>
+        <div class="risk-body">La condición mínima exige commits visibles de todos los integrantes. Cada uno sube sus propios cambios, nunca uno solo sube todo. El repo debe crearse en la semana 1 con todos los colaboradores agregados.</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- app -->
+
+<!-- ═══════════════════════════════ MODAL ═══════════════════════════════ -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalIfBg(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modal-title">Tarea</div>
+        <div class="modal-sub"  id="modal-sub">Integrante · horas estimadas</div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <h3>Estado</h3>
+        <div class="status-selector" id="modal-status-selector"></div>
+      </div>
+      <div class="modal-section">
+        <h3>Descripción</h3>
+        <div class="modal-desc" id="modal-desc"></div>
+      </div>
+      <div class="modal-section" id="modal-quotes-section">
+        <h3>Del enunciado</h3>
+        <div id="modal-quotes"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════ DATA ═══════════════ */
+
+const TASKS = [
+  // ── INTEGRANTE 1 ──
+  {
+    id:'i1t1', int:1, order:1,
+    title:'Implementar LCDE',
+    hours:'~6h',
+    badges:[{type:'block',text:'Bloqueante para todos'}],
+    spec: {
+      que: 'Programar el TDA Lista Circular Doblemente Enlazada (LCDE) en C, incluyendo punteros al anterior y siguiente, y el enlace del último nodo con el primero.',
+      para_que: 'Es el núcleo del mapa del juego. Sin esto, el jugador no puede desplazarse ni los bandidos pueden circular por el desierto.',
+      contexto: 'Es fundamental que sea genérica. Se usará para representar la ruta comercial entre el Campamento Inicial (I) y la Ciudad Refugio (S).'
+    },
+    desc:'Crear <code>lista.h / lista.c</code> con las primitivas del TDA: crear lista, insertar nodo al final, recorrer hacia adelante y hacia atrás, buscar nodo por posición, eliminar nodo por puntero, destruir lista liberando memoria. Usar los TDAs de la cátedra como base y adaptarlos si es necesario.',
+    quotes:[
+      'Ruta del desierto: la ruta se encontrará compuesta por una secuencia de posiciones enlazadas entre sí. Desde el punto de vista de su representación en la computadora, deberá modelarse mediante una Lista Circular Doblemente Enlazada. Cada nodo de la lista representará una posición del recorrido.',
+      'Para los bandidos es posible desplazarse hacia atrás y hacia adelante inclusive a través de la entrada y la salida, como si la ruta fuera un círculo.'
+    ]
+  },
+  {
+    id:'i1t2', int:1, order:2,
+    title:'Probar LCDE (main de prueba)',
+    hours:'~2h',
+    badges:[{type:'par',text:'Solo I1'}],
+    spec: {
+      que: 'Crear un programa de prueba para validar la implementación de la LCDE.',
+      para_que: 'Verificar que las operaciones de inserción, recorrido bidireccional y eliminación funcionen correctamente.',
+      contexto: 'Es crucial probar la circularidad y los enlaces dobles antes de usar la LCDE en el tablero del juego.'
+    },
+    desc:'Crear <code>main_test_lista.c</code>: insertar 10 nodos con contenidos variados, recorrer en ambas direcciones e imprimir, eliminar un nodo del medio y uno del extremo, verificar que los enlaces circulares sigan siendo correctos. Si está disponible, correr con valgrind para detectar leaks.',
+    quotes:[]
+  },
+  {
+    id:'i1t3', int:1, order:3,
+    title:'Leer config.txt y distribuir casillas',
+    hours:'~5h',
+    badges:[{type:'par',text:'Después de tarea 1'}],
+    spec: {
+      que: 'Leer el archivo config.txt y construir la LCDE con las casillas distribuidas aleatoriamente.',
+      para_que: 'Generar el tablero inicial del juego con los parámetros configurables.',
+      contexto: 'Los parámetros incluyen cantidad de posiciones, vidas iniciales, máximos de cada tipo de casilla.'
+    },
+    desc:'Crear <code>tablero.h / tablero.c</code>. Parsear el archivo <code>config.txt</code> leyendo los 7 parámetros (cantidad_posiciones, vidas_inicio, maximo_bandidos, maximo_premios, maximo_vidas_extra, maximo_oasis, maximo_tormentas). Construir la LCDE con todos los nodos: I en posición 1, S en posición N, y distribuir el resto (P, V, O, T, B) en posiciones aleatorias no repetidas. Las posiciones vacías se marcan con ".".',
+    quotes:[
+      'Configuraciones iniciales: mediante un archivo de texto denominado config.txt será posible establecer los siguientes parámetros: cantidad_posiciones, vidas_inicio, maximo_bandidos, maximo_premios, maximo_vidas_extra, maximo_oasis, maximo_tormentas.',
+      'Al iniciar el juego, se debe generar el tablero en un archivo de texto denominado caravana.txt a partir de los parámetros de configuración provenientes del archivo config.txt.'
+    ]
+  },
+  {
+    id:'i1t4', int:1, order:4,
+    title:'Validar escenario y escribir caravana.txt',
+    hours:'~4h',
+    badges:[{type:'par',text:'Después de tarea 3'}],
+    spec: {
+      que: 'Validar que el tablero generado tenga solución posible y escribir el estado inicial a caravana.txt.',
+      para_que: 'Asegurar que cada escenario sea jugable y persistir el tablero para el juego.',
+      contexto: 'La validación incluye checks de existencia de S, espacio para bandidos, y límites de elementos; el archivo se actualiza en cada turno.'
+    },
+    desc:'Verificar que el tablero generado tiene solución posible: debe existir al menos un nodo S, el total de posiciones debe ser mayor al número de bandidos, y no puede colocarse más elementos de los que entran. Escribir el estado del tablero al archivo <code>caravana.txt</code> en el formato indicado: <code>01:[I J]</code>, <code>02:.</code>, <code>03:P</code>, etc. Esta función debe poder llamarse también para actualizar el archivo en cada turno.',
+    quotes:[
+      'Tener en cuenta que al iniciar una nueva partida debe crearse un nuevo escenario respetando los parámetros iniciales. Cada escenario que se genere debe tener una solución posible.',
+      'La representación de los componentes del juego debe realizarse con los siguientes caracteres ASCII: Jugador: J · Inicio: I · Salida: S · Premio: P · Vida extra: V · Oasis: O · Tormenta: T · Bandido: B · Posición vacía: .'
+    ]
+  },
+  {
+    id:'i1t5', int:1, order:5,
+    title:'Setup del repositorio GitHub',
+    hours:'~1h',
+    badges:[{type:'par',text:'Paralelo con tarea 1'}],
+    spec: {
+      que: 'Configurar un repositorio público en GitHub para el proyecto colaborativo.',
+      para_que: 'Permitir la entrega del proyecto y demostrar la colaboración a través de commits individuales.',
+      contexto: 'El repositorio debe incluir .gitignore para C, README con equipo y descripción, y ser accesible públicamente.'
+    },
+    desc:'Crear el repositorio público en GitHub con el nombre de formato correcto, hacer el primer commit con la estructura de carpetas del proyecto y un <code>.gitignore</code> apropiado para C (ignorar bin/, obj/, *.o, *.exe). Agregar a todos los integrantes como colaboradores. Crear un README inicial con el nombre del equipo, integrantes y descripción del proyecto.',
+    quotes:[
+      'En la entrega sobre la plataforma MIeL, se deberá adjuntar el archivo .zip y la URL del repositorio en GitHub en donde se encuentra versionado el código. El repositorio debe ser público.',
+      'El desarrollo debe ser colaborativo y se pondrá de manifiesto a través de los commits propuestos por los integrantes en GitHub.'
+    ]
+  },
+
+  // ── INTEGRANTE 2 ──
+  {
+    id:'i2t1', int:2, order:1,
+    title:'Implementar y probar Cola',
+    hours:'~4h',
+    badges:[{type:'par',text:'Paralelo con I1-tarea1'}],
+    spec: {
+      que: 'Desarrollar el TDA Cola (FIFO) y probar su funcionamiento.',
+      para_que: 'Gestionar el orden de procesamiento de movimientos en el juego.',
+      contexto: 'Es requerido por el enunciado para encolar y desencolar movimientos del jugador y bandidos.'
+    },
+    desc:'Crear <code>cola.h / cola.c</code> con las primitivas del TDA: crear cola, encolar elemento, desencolar elemento, consultar si está vacía, destruir cola. Probar con <code>main_test_cola.c</code>: encolar varios movimientos ficticios ("F3", "B2", "F1"), desencolarlos verificando el orden FIFO. Los movimientos del jugador Y de los bandidos se procesarán por esta cola.',
+    quotes:[
+      'Los movimientos del jugador y de la computadora (bandidos) deben ser encolados. Luego se deben desencolar, y determinar el nuevo estado y actualizar la pantalla.'
+    ]
+  },
+  {
+    id:'i2t2', int:2, order:2,
+    title:'Dado virtual + movimiento del jugador',
+    hours:'~5h',
+    badges:[{type:'par',text:'Paralelo con I1 (usar mock)'}],
+    spec: {
+      que: 'Implementar el dado virtual y la lógica de movimiento del jugador sobre la LCDE.',
+      para_que: 'Permitir que el jugador se desplace en el tablero según el lanzamiento del dado.',
+      contexto: 'Incluye el rebote en S y la posibilidad de movimiento hacia adelante o atrás; usar mock si LCDE no está lista.'
+    },
+    desc:'En <code>juego.h / juego.c</code>: implementar el dado virtual (rand % 6 + 1, con srand al inicio). Implementar la lógica de movimiento del jugador sobre la LCDE: avanzar N posiciones recorriendo los nodos, y el caso especial de rebote en S (si el jugador sobrepasa S, retrocede las posiciones sobrantes hasta quedar exactamente N posiciones desde donde estaba). Mientras la LCDE no esté lista, usar un array de chars como mock del tablero.',
+    quotes:[
+      'Dado virtual: debe generar un valor aleatorio entero entre 1 y 6 inclusive. Ese valor determinará exactamente la cantidad de posiciones que deberá desplazarse el jugador en el turno correspondiente.',
+      'Si, al efectuar un lanzamiento del dado, el jugador sobrepasara la Ciudad Refugio, deberá continuar su desplazamiento retrocediendo la cantidad de posiciones sobrantes, de modo tal que el movimiento total realizado sea exactamente igual al valor obtenido en el dado.',
+      'El jugador podrá decidir si realiza dicho desplazamiento hacia adelante o hacia atrás sobre la ruta.'
+    ]
+  },
+  {
+    id:'i2t3', int:2, order:3,
+    title:'Efectos por casilla',
+    hours:'~4h',
+    badges:[{type:'dep',text:'Necesita LCDE de I1'}],
+    spec: {
+      que: 'Implementar la aplicación de efectos de casillas especiales al jugador.',
+      para_que: 'Modificar el estado del jugador según la casilla donde cae.',
+      contexto: 'Efectos incluyen puntos, vidas, protección, pérdida de turno o reset; solo aplican en la casilla destino.'
+    },
+    desc:'Implementar la función que evalúa y aplica el efecto de la casilla donde cae el jugador: P suma 1 punto, V suma 1 vida, O activa un flag de protección para el turno siguiente, T hace perder el siguiente turno (si hay protección activa, no tiene efecto), B resta 1 vida + envía al jugador al nodo I + elimina ese bandido de la lista. Solo se aplica el efecto de la casilla destino, no las intermedias.',
+    quotes:[
+      'Premios (P): cuando el jugador capture un premio obtendrá 1 punto.',
+      'Vidas extra (V): cuando el jugador capture una Vida Extra se incrementará en uno el número de vidas disponibles.',
+      'Oasis (O): cuando el jugador llegue a un oasis obtendrá protección para el turno siguiente. Durante ese turno no podrá perder vidas a causa de bandidos ni tormentas.',
+      'Tormentas de arena (T): cuando el jugador caiga en una tormenta perderá el siguiente turno. Si el jugador se encontrara protegido por un oasis, la tormenta no producirá efecto.',
+      'El movimiento se considerará resuelto únicamente en la posición de destino; por lo tanto, solo se aplicarán sobre el jugador los efectos correspondientes al punto en el que finalmente cae.'
+    ]
+  },
+  {
+    id:'i2t4', int:2, order:4,
+    title:'Lógica de bandidos + encolado de turnos',
+    hours:'~5h',
+    badges:[{type:'dep',text:'Necesita LCDE de I1'}],
+    spec: {
+      que: 'Desarrollar la lógica de movimiento de los bandidos y el encolado de todos los movimientos.',
+      para_que: 'Simular la IA de los bandidos persiguiendo al jugador y procesar turnos en orden.',
+      contexto: 'Cada bandido se mueve 1 posición en la dirección más corta; encolar movimientos del jugador primero, luego bandidos.'
+    },
+    desc:'Crear <code>bandidos.h / bandidos.c</code>. En cada turno de la computadora, cada bandido calcula la distancia al jugador hacia adelante y hacia atrás en la lista circular, y se mueve 1 posición en la dirección más corta. Si quedan en la misma posición que el jugador al finalizar el movimiento, se aplica el efecto de bandido. Encolar TODOS los movimientos (jugador primero, luego bandidos) en la Cola antes de procesarlos.',
+    quotes:[
+      'Los bandidos se desplazan automáticamente sobre la ruta. En cada turno de la computadora, cada bandido podrá avanzar o retroceder sobre la lista según el criterio definido por el equipo de diseño.',
+      'Un bandido afectará al jugador únicamente si, al finalizar el movimiento del jugador o del propio bandido, ambos quedan ubicados en la misma posición. En ese caso, el jugador perderá una vida, volverá al Campamento Inicial y el bandido que lo haya interceptado será eliminado de la ruta.',
+      'Los movimientos del jugador y de la computadora (bandidos) deben ser encolados. Luego se deben desencolar, y determinar el nuevo estado y actualizar la pantalla.'
+    ]
+  },
+  {
+    id:'i2t5', int:2, order:5,
+    title:'Registro de movimientos FX/BX + condiciones de fin',
+    hours:'~3h',
+    badges:[{type:'par',text:'Después de tareas 3 y 4'}],
+    spec: {
+      que: 'Mantener registro de movimientos del jugador y verificar condiciones de fin de partida.',
+      para_que: 'Mostrar historial de movimientos y determinar victoria o derrota.',
+      contexto: 'Registro en formato FX/BX; victoria al llegar a S, derrota al perder todas las vidas.'
+    },
+    desc:'Mantener una lista (array o lista enlazada) con el historial de movimientos del jugador en formato FX (Forward X casillas) o BX (Backward X casillas). Al finalizar la partida mostrar este registro completo. Implementar las condiciones de fin: victoria cuando el jugador alcanza el nodo S, derrota cuando vidas = 0. Exponer una función para que I4 pueda consultar y mostrar el registro.',
+    quotes:[
+      'Se debe llevar un registro de los movimientos realizados por el jugador. Al finalizar la partida se debe mostrar el registro de movimientos. El formato será FX o BX, en donde FX indica adelante x casillas (Forward X casillas) y BX indica atrás x casillas (Backward X casillas).',
+      'La partida finalizará cuando el jugador alcance la Ciudad Refugio o cuando pierda todas sus vidas antes de alcanzarla.'
+    ]
+  },
+
+  // ── INTEGRANTE 3 ──
+  {
+    id:'i3t1', int:3, order:1,
+    title:'Implementar y probar ABB',
+    hours:'~5h',
+    badges:[{type:'par',text:'Paralelo con I1 e I2'}],
+    spec: {
+      que: 'Implementar el TDA Árbol Binario de Búsqueda (ABB) y probarlo.',
+      para_que: 'Crear un índice eficiente para buscar y ordenar jugadores por nombre.',
+      contexto: 'Usar TDAs de la cátedra como base; clave es el nombre alfanumérico del jugador.'
+    },
+    desc:'Crear <code>abb.h / abb.c</code> usando los TDAs de la cátedra como base: insertar jugador (clave = nombre alfanumérico), buscar jugador por nombre, recorrido inorden (para listar jugadores ordenados), destruir árbol liberando memoria. Probar con <code>main_test_abb.c</code> insertando 5 jugadores ficticios, buscando uno que exista y uno que no.',
+    quotes:[
+      'El archivo de jugadores deberá accederse a través de un índice implementado sobre un árbol de búsqueda binaria. El índice debe mantenerse actualizado y además se debe persistir sobre un archivo binario.'
+    ]
+  },
+  {
+    id:'i3t2', int:3, order:2,
+    title:'Serializar y deserializar el ABB a binario',
+    hours:'~5h',
+    badges:[{type:'par',text:'Después de tarea 1'}],
+    spec: {
+      que: 'Implementar serialización y deserialización del ABB a archivo binario.',
+      para_que: 'Persistir el índice de jugadores en disco.',
+      contexto: 'Usar recorrido preorden con byte centinela para nodos nulos; reconstruir recursivamente al cargar.'
+    },
+    desc:'En <code>persistencia.h / persistencia.c</code>: guardar el ABB en un archivo binario usando recorrido preorden — escribir cada struct Jugador seguido de un byte centinela (ej: 0x00) para indicar nodo nulo. Al cargar, reconstruir el árbol recursivamente leyendo el mismo formato. No guardar punteros, solo los datos. Probar con un ciclo guardar → cerrar programa → recargar → verificar que el árbol es igual.',
+    quotes:[
+      'El índice debe mantenerse actualizado y además se debe persistir sobre un archivo binario. Al iniciarse el juego, de existir registro de jugadores, ese registro debe accederse a través del índice persistido anteriormente.'
+    ]
+  },
+  {
+    id:'i3t3', int:3, order:3,
+    title:'Alta de jugadores + carga del índice al inicio',
+    hours:'~4h',
+    badges:[{type:'par',text:'Después de tarea 2'}],
+    spec: {
+      que: 'Gestionar el alta de nuevos jugadores y la carga del índice ABB al inicio.',
+      para_que: 'Mantener un registro persistente de jugadores en el ABB.',
+      contexto: 'Cargar ABB si existe; buscar o crear jugador al ingresar nombre; persistir al finalizar partida.'
+    },
+    desc:'Al iniciar el juego: si existe el archivo binario del índice, cargarlo en memoria (reconstruir el ABB). Buscar el nombre ingresado por el usuario. Si no existe, crear el registro del jugador y agregarlo al ABB. Al finalizar cada partida (o al salir), persistir el ABB actualizado. Exponer funciones claras para que I4 pueda llamarlas desde main.c.',
+    quotes:[
+      'Al iniciar el juego debe indicarse el nombre del jugador. En caso de no existir en los registros se procederá a su alta.',
+      'Al iniciarse el juego, de existir registro de jugadores, ese registro debe accederse a través del índice persistido anteriormente.'
+    ]
+  },
+  {
+    id:'i3t4', int:3, order:4,
+    title:'Archivo de partidas jugadas (historial)',
+    hours:'~4h',
+    badges:[{type:'par',text:'Paralelo con tarea 3'}],
+    spec: {
+      que: 'Crear un archivo para registrar el historial de partidas jugadas.',
+      para_que: 'Almacenar datos de cada partida para estadísticas y ranking.',
+      contexto: 'Incluir nombre, puntos, movimientos, resultado, fecha; función para leer partidas de un jugador.'
+    },
+    desc:'Crear el archivo de registro de partidas (puede ser texto o binario). Al finalizar cada partida, guardar: nombre del jugador, puntos obtenidos, cantidad de movimientos realizados, resultado (victoria/derrota), fecha. Función para leer y devolver todas las partidas de un jugador dado. Un jugador puede tener cero, una o varias partidas registradas.',
+    quotes:[
+      'El juego debe contar con una capa de gestión de datos en la que se hará el registro de usuarios, partidas, puntuaciones obtenidas y cantidad de movimientos realizados en cada partida.',
+      'Al menos deberá contarse con dos archivos, uno de jugadores y otro de registro de partidas jugadas por los jugadores (un jugador puede tener ninguna, una o varias partidas jugadas).'
+    ]
+  },
+  {
+    id:'i3t5', int:3, order:5,
+    title:'Función de ranking global',
+    hours:'~3h',
+    badges:[{type:'dep',text:'I4 necesita esta función'}],
+    spec: {
+      que: 'Implementar una función que calcule el ranking global de jugadores.',
+      para_que: 'Mostrar un leaderboard ordenado por puntos totales acumulados.',
+      contexto: 'Leer todas las partidas, sumar puntos por jugador, ordenar de mayor a menor.'
+    },
+    desc:'Leer todas las partidas del archivo de historial, acumular puntos totales por jugador (suma de todas sus partidas), ordenar de mayor a menor (un array temporal + cualquier ordenamiento simple es suficiente). Devolver la lista ordenada en una estructura que I4 pueda iterar para mostrarla en pantalla. El ranking es por puntos totales acumulados a lo largo de todas las partidas.',
+    quotes:[
+      'El juego deberá contener un menú que permita: ver el ranking de jugadores, jugar una nueva partida, salir del juego.',
+      'El ranking estará ordenado a partir de la cantidad de puntos obtenidos por cada jugador a lo largo de todas sus partidas registradas.'
+    ]
+  },
+
+  // ── INTEGRANTE 4 ──
+  {
+    id:'i4t1', int:4, order:1,
+    title:'Menú principal + ingreso de nombre',
+    hours:'~4h',
+    badges:[{type:'par',text:'Paralelo con todos'}],
+    spec: {
+      que: 'Crear el menú principal y la validación del nombre del jugador.',
+      para_que: 'Proporcionar la interfaz inicial para navegar el juego.',
+      contexto: 'Incluir bienvenida, ingreso de nombre, opciones de menú; usar stubs hasta módulos listos.'
+    },
+    desc:'Crear <code>menu.h / menu.c</code>: pantalla de bienvenida con nombre del juego, campo de ingreso del nombre del jugador (validar no vacío y longitud razonable), menú principal con opciones numeradas: 1-Nueva partida / 2-Ver ranking / 3-Salir. Usar funciones stub (que impriman un mensaje) para las opciones hasta tener los módulos reales disponibles. El menú debe volver a mostrarse después de cada partida.',
+    quotes:[
+      'El juego deberá contener un menú que permita: ver el ranking de jugadores, jugar una nueva partida, salir del juego.',
+      'Al iniciar el juego debe indicarse el nombre del jugador. En caso de no existir en los registros se procederá a su alta.'
+    ]
+  },
+  {
+    id:'i4t2', int:4, order:2,
+    title:'Visualización del tablero en consola',
+    hours:'~4h',
+    badges:[{type:'par',text:'Paralelo con I1 (mock)'}],
+    spec: {
+      que: 'Desarrollar la visualización del tablero en consola.',
+      para_que: 'Mostrar el estado actual del juego al usuario.',
+      contexto: 'Incluir posiciones del jugador, bandidos, casillas especiales; probar con tablero hardcodeado.'
+    },
+    desc:'Crear <code>interfaz.h / interfaz.c</code>: función que recibe el estado del tablero (la LCDE o una estructura equivalente) y lo imprime en consola con el formato <code>01:[I J]</code>, <code>02:.</code>, etc. Mostrar claramente la posición del jugador, las posiciones de los bandidos, el estado de las casillas especiales. Mostrar también el estado del jugador: vidas, puntos, protección activa, turno saltado. Probar primero con un tablero hardcodeado.',
+    quotes:[
+      'Al iniciar el juego, se debe generar el tablero en un archivo de texto denominado caravana.txt. La representación de los componentes del juego debe realizarse con los siguientes caracteres ASCII.',
+      'Casillero con jugador: [J] · Casillero con jugador y oasis: [O J] · Casillero con jugador y Tormenta: [T J]'
+    ]
+  },
+  {
+    id:'i4t3', int:4, order:3,
+    title:'main.c + integración primera fase',
+    hours:'~5h',
+    badges:[{type:'dep',text:'Depende de I1 t3-t4, I2 t1-t3'}],
+    spec: {
+      que: 'Integrar módulos iniciales en main.c para una partida básica.',
+      para_que: 'Tener una versión jugable del juego sin bandidos.',
+      contexto: 'Conectar menú, tablero, movimiento del jugador y Cola; permitir ganar/perder.'
+    },
+    desc:'Crear <code>main.c</code>: conectar el flujo menú → carga del ABB (I3) → nueva partida. Integrar tablero de I1 con visualización propia. Integrar turno del jugador de I2. Integrar Cola de I2 para el procesamiento de movimientos. El objetivo de esta tarea es tener una partida jugable sin bandidos: el jugador puede moverse, recibir efectos de casilla y ganar/perder.',
+    quotes:[
+      'Los movimientos del jugador y de la computadora (bandidos) deben ser encolados. Luego se deben desencolar, y determinar el nuevo estado y actualizar la pantalla.'
+    ]
+  },
+  {
+    id:'i4t4', int:4, order:4,
+    title:'Integración completa (bandidos + persistencia + ranking)',
+    hours:'~5h',
+    badges:[{type:'dep',text:'Depende de I2-t4 e I3-t5'}],
+    spec: {
+      que: 'Integrar todos los módulos para el juego completo.',
+      para_que: 'Obtener una versión final funcional con bandidos, persistencia y ranking.',
+      contexto: 'Agregar movimientos de bandidos, guardar resultados, mostrar ranking; verificar flujo completo.'
+    },
+    desc:'Agregar los bandidos al ciclo de juego (I2 tarea 4): encolar sus movimientos, procesarlos, verificar colisión. Integrar la persistencia completa (I3): cargar ABB al inicio, guardar partida al terminar. Mostrar el ranking usando la función de I3. Verificar el flujo completo de punta a punta: inicio → jugar → guardar resultado → volver al menú → ver ranking → salir.',
+    quotes:[
+      'Se debe implementar una lógica para que la computadora haga sus movimientos. Los movimientos se verán reflejados sobre los bandidos, los cuales irán tras el jugador tratando de capturarlo.',
+      'El juego debe contar con una capa de gestión de datos en la que se hará el registro de usuarios, partidas, puntuaciones obtenidas y cantidad de movimientos realizados en cada partida.'
+    ]
+  },
+  {
+    id:'i4t5', int:4, order:5,
+    title:'Pruebas de borde + 0 warnings + documentación',
+    hours:'~4h',
+    badges:[{type:'par',text:'Después de tarea 4'}],
+    spec: {
+      que: 'Probar casos borde, compilar sin warnings y documentar el proyecto.',
+      para_que: 'Asegurar la calidad del código y preparar la entrega.',
+      contexto: 'Incluir pruebas de rebote, colisiones, protección; actualizar README con instrucciones.'
+    },
+    desc:'Probar sistemáticamente los casos borde: rebote exacto en S, bandido en posición I cuando el jugador regresa, jugador sin vidas al inicio de turno, oasis que expira exactamente al siguiente turno, tablero con 1 solo bandido y 1 posición libre. Compilar con <code>-Wall -Wextra</code> y corregir todos los warnings. Actualizar README con instrucciones de compilación, ejecución y descripción de cada módulo.',
+    quotes:[
+      'Debe compilar con 0 errores 0 warnings.',
+      'Código prolijo, dividido en funciones. Proyecto dividido en archivos .h y .c. Funciones lo más genéricas posibles. Nombres significativos de variables.',
+      'El desarrollo debe ser colaborativo y se pondrá de manifiesto a través de los commits propuestos por los integrantes en GitHub.'
+    ]
+  }
+];
+
+const MODULES = [
+  {
+    id:'m1', label:'M1', cls:'mb-m1',
+    name:'Estructuras de Datos Base',
+    hours:'~20–25 hs total',
+    items:[
+      'Lista Circular Doblemente Enlazada (LCDE): nodos, inserción, recorrido en ambas direcciones, eliminación, destrucción',
+      'Cola (Queue): encolar y desencolar movimientos del jugador y de los bandidos',
+      'Árbol Binario de Búsqueda (ABB): índice de jugadores por nombre, inserción, búsqueda, inorden',
+    ],
+    quotes:[
+      'Desde el punto de vista de su representación en la computadora, deberá modelarse mediante una Lista Circular Doblemente Enlazada.',
+      'Los movimientos del jugador y de la computadora (bandidos) deben ser encolados.',
+      'El archivo de jugadores deberá accederse a través de un índice implementado sobre un árbol de búsqueda binaria.'
+    ],
+    files:['lista.h','lista.c','cola.h','cola.c','abb.h','abb.c'],
+    who:'I1 (LCDE) + I2 (Cola) + I3 (ABB)'
+  },
+  {
+    id:'m2', label:'M2', cls:'mb-m2',
+    name:'Lógica del Tablero',
+    hours:'~10–15 hs total',
+    items:[
+      'Lectura y parseo de config.txt con los 7 parámetros de configuración',
+      'Generación aleatoria del tablero: posicionar I, S, P, V, O, T, B sin superposición',
+      'Validación de que el escenario generado tiene solución posible',
+      'Escritura de caravana.txt con el estado actual del tablero (actualizable cada turno)',
+    ],
+    quotes:[
+      'Configuraciones iniciales: mediante un archivo de texto denominado config.txt será posible establecer los siguientes parámetros...',
+      'Al iniciar el juego, se debe generar el tablero en un archivo de texto denominado caravana.txt a partir de los parámetros de configuración...',
+      'Cada escenario que se genere debe tener una solución posible.'
+    ],
+    files:['tablero.h','tablero.c'],
+    who:'I1'
+  },
+  {
+    id:'m3', label:'M3', cls:'mb-m3',
+    name:'Persistencia de Archivos',
+    hours:'~15–20 hs total',
+    items:[
+      'Serialización y deserialización del ABB a archivo binario (preorden + centinela para nulos)',
+      'Archivo de jugadores: alta, búsqueda, actualización',
+      'Archivo de partidas jugadas: registro por jugador con puntos, movimientos y resultado',
+      'Carga del índice ABB al inicio del programa si ya existe',
+    ],
+    quotes:[
+      'El índice debe mantenerse actualizado y además se debe persistir sobre un archivo binario.',
+      'Al menos deberá contarse con dos archivos, uno de jugadores y otro de registro de partidas jugadas por los jugadores...',
+      'Al iniciarse el juego, de existir registro de jugadores, ese registro debe accederse a través del índice persistido anteriormente.'
+    ],
+    files:['persistencia.h','persistencia.c'],
+    who:'I3'
+  },
+  {
+    id:'m4', label:'M4', cls:'mb-m4',
+    name:'Lógica de Juego',
+    hours:'~20–25 hs total',
+    items:[
+      'Turno del jugador: dado virtual (1–6), elección de dirección, movimiento exacto, rebote en S',
+      'Efectos por casilla destino: P (+1 punto), V (+1 vida), O (protección), T (pierde turno), B (pierde vida + reset)',
+      'Turno de la computadora: cada bandido avanza 1 posición hacia el jugador por la dirección más corta',
+      'Encolado y desencolado de todos los movimientos (jugador + bandidos) antes de procesar',
+      'Registro de movimientos en formato FX / BX',
+      'Condiciones de victoria (llegar a S) y derrota (vidas = 0)',
+    ],
+    quotes:[
+      'Dado virtual: debe generar un valor aleatorio entero entre 1 y 6 inclusive.',
+      'Si, al efectuar un lanzamiento del dado, el jugador sobrepasara la Ciudad Refugio, deberá continuar su desplazamiento retrocediendo...',
+      'Los bandidos se desplazan automáticamente sobre la ruta. En cada turno de la computadora...',
+      'Se debe llevar un registro de los movimientos realizados por el jugador.'
+    ],
+    files:['juego.h','juego.c','bandidos.h','bandidos.c'],
+    who:'I2'
+  },
+  {
+    id:'m5', label:'M5', cls:'mb-m5',
+    name:'Menú e Interfaz de Usuario',
+    hours:'~8–12 hs total',
+    items:[
+      'Pantalla de bienvenida e ingreso del nombre del jugador (con validación)',
+      'Menú principal: nueva partida / ver ranking / salir',
+      'Visualización del tablero en consola con el formato correcto en cada turno',
+      'Muestra del registro de movimientos al finalizar la partida',
+    ],
+    quotes:[
+      'El juego deberá contener un menú que permita: ver el ranking de jugadores, jugar una nueva partida, salir del juego.',
+      'En caso de no existir en los registros se procederá a su alta.',
+      'El ranking estará ordenado a partir de la cantidad de puntos obtenidos por cada jugador a lo largo de todas sus partidas registradas.'
+    ],
+    files:['menu.h','menu.c','interfaz.h','interfaz.c'],
+    who:'I4'
+  },
+  {
+    id:'m6', label:'M6', cls:'mb-m6',
+    name:'Integración, Pruebas y Pulido',
+    hours:'~10–15 hs total',
+    items:[
+      'Integración de todos los módulos en main.c de forma incremental',
+      'Pruebas de casos borde: rebote en S, bandido en I, sin vidas, protección de oasis',
+      'Compilación con -Wall -Wextra y corrección de todos los warnings',
+      'Documentación del código, README completo, instrucciones de compilación',
+      'Verificación de commits individuales en GitHub por cada integrante',
+    ],
+    quotes:[
+      'Debe compilar con 0 errores 0 warnings',
+      'Proyecto dividido en archivos .h y .c.',
+      'El desarrollo debe ser colaborativo y se pondrá de manifiesto a través de los commits propuestos por los integrantes en GitHub.'
+    ],
+    files:['main.c'],
+    who:'I4 (coordina)'
+  }
+];
+
+/* ═══════════════ STATE ═══════════════ */
+let taskStatus = {};
+try { taskStatus = JSON.parse(localStorage.getItem('caravana_status') || '{}'); } catch(e) {}
+
+function saveStatus() {
+  try { localStorage.setItem('caravana_status', JSON.stringify(taskStatus)); } catch(e) {}
+}
+
+function getStatus(id) { return taskStatus[id] || 'todo'; }
+function cycleStatus(id) {
+  const s = getStatus(id);
+  taskStatus[id] = s === 'todo' ? 'doing' : s === 'doing' ? 'done' : 'todo';
+  saveStatus();
+  renderAll();
+}
+function setStatus(id, val) {
+  taskStatus[id] = val;
+  saveStatus();
+  renderAll();
+  if (currentModal === id) openModal(id);
+}
+
+/* ═══════════════ RENDER ═══════════════ */
+
+const intNames = ['Integrante 1','Integrante 2','Integrante 3','Integrante 4'];
+const intModules = ['LCDE · Tablero · GitHub','Cola · Lógica de juego · Bandidos','ABB · Persistencia · Ranking','Menú · Interfaz · Integración'];
+const fillCls = ['fill1','fill2','fill3','fill4'];
+const avCls = ['av1','av2','av3','av4'];
+
+function statusIcon(s) {
+  if (s === 'done')  return '✓';
+  if (s === 'doing') return '◐';
+  return '';
+}
+
+function renderAll() {
+  renderGrid();
+  renderGlobalProgress();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('int-grid');
+  grid.innerHTML = '';
+  for (let i = 1; i <= 4; i++) {
+    const tasks = TASKS.filter(t => t.int === i);
+    const done  = tasks.filter(t => getStatus(t.id) === 'done').length;
+    const doing = tasks.filter(t => getStatus(t.id) === 'doing').length;
+    const pct   = Math.round(done / tasks.length * 100);
+
+    const card = document.createElement('div');
+    card.className = 'int-card';
+    card.innerHTML = `
+      <div class="int-header">
+        <div class="int-avatar ${avCls[i-1]}">I${i}</div>
+        <div class="int-info">
+          <div class="int-name">${intNames[i-1]}</div>
+          <div class="int-module">${intModules[i-1]}</div>
+        </div>
+        <div class="int-prog">
+          <div class="int-prog-num">${pct}%</div>
+          <div class="int-prog-bar"><div class="${fillCls[i-1]} int-prog-fill" style="width:${pct}%"></div></div>
+        </div>
+      </div>
+      <div class="int-body">
+        ${tasks.map(t => renderTaskRow(t)).join('')}
+      </div>
+    `;
+    grid.appendChild(card);
+  }
+}
+
+function renderTaskRow(t) {
+  const s = getStatus(t.id);
+  const badges = t.badges.map(b => `<span class="badge badge-${b.type}">${b.text}</span>`).join('');
+  
+  return `
+    <div class="task-row" onclick="openModal('${t.id}')">
+      <div class="task-left">
+        <button class="task-status-btn ${s}" onclick="event.stopPropagation(); cycleStatus('${t.id}')">
+          ${statusIcon(s)}
+        </button>
+        <div class="task-content">
+          <div class="task-title ${s}">${t.order}. ${t.title}</div>
+          <div class="task-badges">${badges}</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
+        <span class="hours-chip">${t.hours}</span>
+        <span class="info-btn">ver ficha</span>
+      </div>
+    </div>
+  `;
+}
+
+function renderGlobalProgress() {
+  const total = TASKS.length;
+  const done  = TASKS.filter(t => getStatus(t.id) === 'done').length;
+  const doing = TASKS.filter(t => getStatus(t.id) === 'doing').length;
+  const todo  = total - done - doing;
+  const pct   = Math.round(done / total * 100);
+  document.getElementById('gp-bar').style.width   = pct + '%';
+  document.getElementById('gp-nums').textContent   = `${done} / ${total} tareas (${pct}%)`;
+  document.getElementById('stat-done').textContent  = `${done} hechas`;
+  document.getElementById('stat-doing').textContent = `${doing} en progreso`;
+  document.getElementById('stat-todo').textContent  = `${todo} pendientes`;
+}
+
+/* ═══════════════ MODAL ═══════════════ */
+let currentModal = null;
+
+function openModal(id) {
+  const t = TASKS.find(x => x.id === id);
+  if (!t) return;
+  currentModal = id;
+  const s = getStatus(id);
+
+  document.getElementById('modal-title').textContent = `${t.order}. ${t.title}`;
+  document.getElementById('modal-sub').textContent   = `${intNames[t.int-1]} · ${t.hours}`;
+  
+  // Construcción de la Ficha Técnica
+  const specHtml = t.spec ? `
+    <div class="spec-grid">
+      <div class="spec-item">
+        <div class="spec-header"><span class="spec-icon">📝</span><span class="spec-label">¿Qué hay que hacer?</span></div>
+        <div class="spec-text">${t.spec.que}</div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-header"><span class="spec-icon">🎯</span><span class="spec-label">¿Para qué sirve?</span></div>
+        <div class="spec-text">${t.spec.para_que}</div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-header"><span class="spec-icon">💡</span><span class="spec-label">Contexto técnico</span></div>
+        <div class="spec-text">${t.spec.contexto}</div>
+      </div>
+    </div>
+  ` : `<div class="modal-desc">${t.desc}</div>`;
+
+  document.getElementById('modal-desc').innerHTML = specHtml;
+
+  const quotesEl = document.getElementById('modal-quotes');
+  const quoteSec = document.getElementById('modal-quotes-section');
+  if (t.quotes && t.quotes.length) {
+    quotesEl.innerHTML = t.quotes.map(q => `<div class="modal-quote">"${q}"</div>`).join('');
+    quoteSec.style.display = '';
+  } else {
+    quoteSec.style.display = 'none';
+  }
+
+  const sel = document.getElementById('modal-status-selector');
+  sel.innerHTML = ['todo','doing','done'].map(v => {
+    const labels = {todo:'Pendiente', doing:'En progreso', done:'Hecho'};
+    const active = s === v ? `sel-${v}` : '';
+    return `<button class="status-opt ${active}" onclick="setStatus('${id}','${v}')">${labels[v]}</button>`;
+  }).join('');
+
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  currentModal = null;
+}
+function closeModalIfBg(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+/* ═══════════════ MÓDULOS ═══════════════ */
+function renderModules() {
+  const c = document.getElementById('module-cards');
+  c.innerHTML = MODULES.map(m => `
+    <div class="module-card" id="mod-${m.id}">
+      <div class="module-card-header" onclick="toggleModule('${m.id}')">
+        <span class="module-badge ${m.cls}">${m.label}</span>
+        <span class="module-name">${m.name}</span>
+        <span class="module-hours">${m.hours}</span>
+        <span class="module-chevron">▼</span>
+      </div>
+      <div class="module-body">
+        <div style="margin-top:12px">
+          ${m.items.map(item => `<div class="module-item">${item}</div>`).join('')}
+        </div>
+        
+        ${m.quotes && m.quotes.length ? `
+        <div class="module-quotes-wrapper">
+          <details>
+            <summary class="module-quotes-summary">Ver Requerimientos del Enunciado</summary>
+            <div class="module-quotes-content">
+              ${m.quotes.map(q => `<div class="module-quote-item">"${q}"</div>`).join('')}
+            </div>
+          </details>
+        </div>
+        ` : ''}
+
+        <div class="module-files" style="margin-top:12px">
+          <strong style="color:var(--text2);font-size:11px">Archivos: </strong>
+          ${m.files.map(f => `<span>${f}</span>`).join(' · ')}
+          &nbsp;·&nbsp; <strong style="color:var(--text2)">Responsable:</strong> ${m.who}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleModule(id) {
+  document.getElementById('mod-' + id).classList.toggle('open');
+}
+
+/* ═══════════════ TABS ═══════════════ */
+function showTab(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+/* ═══════════════ INIT ═══════════════ */
+renderModules();
+renderAll();
+</script>
+</body>
+</html>
