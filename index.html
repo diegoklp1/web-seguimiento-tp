@@ -984,10 +984,14 @@ const MODULES = [
 /* ═══════════════ STATE ═══════════════ */
 /* ═══════════════ CONFIGURACIÓN NUBE ═══════════════ */
 const BIN_ID = '69ed493e856a68218971aba9';
-const API_KEY = '$2a$10$.gdzrdupyWto3WJS3vXUhOYHfM53jYOfY/lg7wzrS42pBG53UtSUu'; // Usar X-Master-Key o X-Access-Key
+const API_KEY = '$2a$10$.gdzrdupyWto3WJS3vXUhOYHfM53jYOfY/lg7wzrS42pBG53UtSUu'; 
 const URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
 let taskStatus = {};
+
+function getStatus(id) { 
+  return taskStatus[id] || 'todo'; 
+}
 
 // 1. CARGAR DATOS DESDE LA NUBE AL INICIAR
 async function loadStatusFromCloud() {
@@ -996,10 +1000,16 @@ async function loadStatusFromCloud() {
       headers: { 'X-Master-Key': API_KEY }
     });
     const data = await res.json();
-    taskStatus = data.record || {};
-    renderAll();
+    
+    // Asignamos los datos de la nube, o un objeto vacío si es la primera vez
+    taskStatus = data.record || {}; 
+    
+    // Dibujamos las tareas RECIÉN cuando llegaron los datos
+    renderAll(); 
   } catch (e) {
-    console.error("Error cargando datos:", e);
+    console.error("Error cargando datos de la nube:", e);
+    // Si falla el internet, dibujamos igual para que no quede la pantalla en blanco
+    renderAll(); 
   }
 }
 
@@ -1023,18 +1033,20 @@ async function saveStatusToCloud() {
 function cycleStatus(id) {
   const s = getStatus(id);
   taskStatus[id] = s === 'todo' ? 'doing' : s === 'doing' ? 'done' : 'todo';
-  renderAll();
-  saveStatusToCloud(); // Se guarda automáticamente al cambiar
+  renderAll(); // Actualiza visualmente al instante
+  saveStatusToCloud(); // Guarda en segundo plano
 }
 
 function setStatus(id, val) {
   taskStatus[id] = val;
   renderAll();
-  saveStatusToCloud(); // Se guarda automáticamente al cambiar
+  saveStatusToCloud();
   if (currentModal === id) openModal(id);
 }
 
-// Inicializar cargando desde la nube
+/* ═══════════════ INIT ═══════════════ */
+renderModules(); 
+// Eliminamos el renderAll() original de acá y en su lugar llamamos a la nube:
 loadStatusFromCloud();
 
 /* ═══════════════ RENDER ═══════════════ */
