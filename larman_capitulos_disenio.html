@@ -1,0 +1,280 @@
+
+<style>
+  :root {
+    --color-background-primary: #121212;
+    --color-background-secondary: #1e1e1e;
+    --color-background-tertiary: #2d2d2d;
+    --color-border-tertiary: #333333;
+    --color-border-secondary: #444444;
+    --color-text-primary: #e0e0e0;
+    --color-text-secondary: #b0b0b0;
+    --color-text-tertiary: #888888;
+    --border-radius-lg: 8px;
+  }
+
+  body {
+    background-color: var(--color-background-primary);
+    margin: 0;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+
+  .wrap { 
+    padding: 1.5rem; 
+    background-color: var(--color-background-primary); 
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* Legend */
+  .legend { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 20px; padding: 0 4px; }
+  .legend span { font-size: 12px; display: flex; align-items: center; gap: 8px; color: var(--color-text-secondary); }
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  
+  /* Colores de la leyenda vinculados a los badges */
+  .d-core { background: #d1caff; }
+  .d-comp { background: #a7f3d0; }
+  .d-arch { background: #fbbf24; }
+  .d-ext  { background: #ffedd5; }
+
+  /* Card container */
+  .cap { 
+    border: 0.5px solid var(--color-border-tertiary); 
+    border-radius: var(--border-radius-lg); 
+    margin-bottom: 12px; 
+    overflow: hidden; 
+    background: var(--color-background-secondary);
+    transition: border-color 0.2s;
+  }
+  .cap:hover { border-color: var(--color-border-secondary); }
+
+  .cap-header { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    padding: 14px 16px; 
+    cursor: pointer; 
+    user-select: none; 
+  }
+  .cap-header:hover { background: var(--color-background-tertiary); }
+
+  /* Badges - Tema Oscuro */
+  .badge { 
+    font-size: 11px; 
+    font-weight: 600; 
+    padding: 2px 10px; 
+    border-radius: 20px; 
+    white-space: nowrap; 
+    flex-shrink: 0; 
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+  .b-core { background: #2a245d; color: #d1caff; }
+  .b-comp { background: #063b2f; color: #a7f3d0; }
+  .b-arch { background: #4a2b05; color: #fbbf24; }
+  .b-ext  { background: #5d2512; color: #ffedd5; }
+
+  .cap-num { font-size: 12px; color: var(--color-text-tertiary); min-width: 45px; font-family: monospace; }
+  .cap-title { font-size: 15px; font-weight: 500; color: var(--color-text-primary); flex: 1; }
+  
+  .cap-body { 
+    padding: 0 16px 14px 57px; /* Alineado con el inicio del texto del título */
+    display: none; 
+    border-top: 0.5px solid var(--color-border-tertiary); 
+  }
+  .cap-body.open { display: block; }
+  .cap-body p { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; margin: 12px 0; }
+
+  /* Chips y Tags */
+  .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 4px; }
+  .semana-chip { 
+    font-size: 11px; 
+    background: var(--color-background-tertiary); 
+    color: var(--color-text-primary); 
+    border: 0.5px solid var(--color-border-secondary); 
+    border-radius: 4px; 
+    padding: 2px 8px; 
+  }
+  .tag { 
+    font-size: 11px; 
+    padding: 2px 8px; 
+    border-radius: 4px; 
+    background: rgba(255,255,255,0.03); 
+    color: var(--color-text-tertiary); 
+    border: 0.5px solid var(--color-border-tertiary);
+  }
+
+  .rel { font-size: 12px; color: var(--color-text-tertiary); border-top: 1px solid var(--color-border-tertiary); pt: 8px; margin-top: 12px; padding-top: 12px; }
+  .rel strong { color: var(--color-text-secondary); font-weight: 600; }
+  
+  .chev { margin-left: auto; color: var(--color-text-tertiary); font-size: 12px; transition: transform 0.2s; }
+</style>
+
+<div class="wrap">
+  <div class="legend">
+    <span><span class="dot d-core"></span> Núcleo GRASP / diseño</span>
+    <span><span class="dot d-comp"></span> Complementario</span>
+    <span><span class="dot d-arch"></span> Arquitectura</span>
+    <span><span class="dot d-ext"></span> Extensión GoF</span>
+  </div>
+
+  <div id="caps"></div>
+</div>
+
+<script>
+const caps = [
+  {
+    num: "Cap. 6",
+    title: "Modelo de Casos de Uso: escritura de requisitos en contexto",
+    badge: "b-comp", bl: "Complementario",
+    semanas: ["Clase 2", "Clase 3"],
+    desc: "Introduce cómo escribir casos de uso (CU) en forma completa, con actores, precondiciones, postcondiciones y flujos alternativos. Es la base para entender de qué hablan los diagramas de CU que ya viste en clase.",
+    unidad: "Unidad 2 — requisitos y su relación con el diseño",
+    relacionados: "Se conecta con Cap. 9 (DSS) y Cap. 14 (transición al diseño). Sin CU bien escritos los diagramas de secuencia pierden contexto.",
+    tags: ["Casos de uso", "Requisitos", "Actores", "Diagrama CU"]
+  },
+  {
+    num: "Cap. 9",
+    title: "Modelo de Casos de Uso: diagramas de secuencia del sistema (DSS)",
+    badge: "b-comp", bl: "Complementario",
+    semanas: ["Clase 3"],
+    desc: "Explica cómo construir el Diagrama de Secuencia del Sistema, que muestra los eventos que el actor envía al sistema como caja negra. Es el puente entre el análisis (CU) y el diseño (diagramas de interacción del Cap. 15).",
+    unidad: "Unidad 2 — transición análisis → diseño",
+    relacionados: "Precede directamente al Cap. 15. El DSS define los mensajes que luego se detallan en diagramas de colaboración/secuencia de diseño.",
+    tags: ["DSS", "Secuencia del sistema", "Eventos", "Diagrama de secuencia"]
+  },
+  {
+    num: "Cap. 14",
+    title: "De los requisitos al diseño en esta iteración",
+    badge: "b-comp", bl: "Complementario",
+    semanas: ["Clase 2"],
+    desc: "Capítulo corto (puente conceptual) que explica el salto mental de analizar qué hace el sistema a decidir cómo lo hace. Establece que el diseño iterativo no es una etapa separada sino que se alimenta de los artefactos de análisis.",
+    unidad: "Unidad 1 y 2 — diferencia diseño de sistemas vs. diseño de software",
+    relacionados: "Lee este cap. antes del 15 y del 16. Duración: 30 min.",
+    tags: ["Transición", "Iteración", "Proceso Unificado"]
+  },
+  {
+    num: "Cap. 15",
+    title: "Notación de los diagramas de interacción",
+    badge: "b-core", bl: "Núcleo",
+    semanas: ["Clase 3", "Clase 5"],
+    desc: "Enseña la sintaxis UML de los diagramas de secuencia y de colaboración/comunicación. Cubre líneas de vida, mensajes sincrónicos/asincrónicos, condiciones, loops y creación de objetos. Indispensable para hacer los diagramas pedidos en Clase 3 y 5.",
+    unidad: "Unidad 1 — modularidad y vistas de comportamiento",
+    relacionados: "La notación aprendida aquí se usa directamente en Cap. 17 (realizar CU con GRASP). Sin este cap. el 17 es incomprensible.",
+    tags: ["Secuencia", "Colaboración", "Comunicación", "UML interacción"]
+  },
+  {
+    num: "Cap. 16",
+    title: "GRASP: diseño de objetos con responsabilidades",
+    badge: "b-core", bl: "Núcleo",
+    semanas: ["Clase 4", "Clase 5"],
+    desc: "El capítulo más importante para la materia. Introduce los primeros cinco patrones GRASP: Experto en Información, Creador, Controlador, Bajo Acoplamiento (evaluativo) y Alta Cohesión (evaluativo). Conecta directamente con los conceptos de Unidad 1 (cohesión, acoplamiento, independencia funcional).",
+    unidad: "Unidad 1 completa + Unidad 3 (patrones)",
+    relacionados: "Requiere haber leído Cap. 14 y 15. Se completa con Cap. 22 (los cuatro patrones GRASP restantes). Ambos juntos cubren todos los patrones que pide Clase 5.",
+    tags: ["GRASP", "Experto", "Creador", "Controlador", "Cohesión", "Acoplamiento"]
+  },
+  {
+    num: "Cap. 17",
+    title: "Modelo de diseño: realización de CU con patrones GRASP",
+    badge: "b-core", bl: "Núcleo",
+    semanas: ["Clase 5"],
+    desc: "Aplica los patrones GRASP del Cap. 16 sobre el caso de estudio NuevaEra, construyendo paso a paso los diagramas de interacción de diseño. Es el capítulo donde ves GRASP en acción, no solo en teoría. Esencial para el trabajo práctico de Clase 5.",
+    unidad: "Unidad 3 — aplicación práctica de patrones",
+    relacionados: "Depende de Cap. 15 (notación) y Cap. 16 (patrones). Junto con Cap. 19 completan la vista estructural y de comportamiento del diseño.",
+    tags: ["GRASP aplicado", "Realización CU", "Diagramas de diseño", "Caso estudio"]
+  },
+  {
+    num: "Cap. 19",
+    title: "Modelo de diseño: creación de diagramas de clases de diseño (DCD)",
+    badge: "b-core", bl: "Núcleo",
+    semanas: ["Clase 2", "Clase 5"],
+    desc: "Explica cómo construir el Diagrama de Clases de Diseño (DCD): diferencias con el Diagrama de Clases del Dominio, cómo agregar atributos, métodos, visibilidad, dependencias y relaciones de navegación. Es la vista estructural del diseño pedida explícitamente en Clase 5.",
+    unidad: "Unidad 1 — modularidad, atributos, métodos, multiplicidad",
+    relacionados: "Complementa Cap. 17. El DCD se genera como resumen de las decisiones tomadas en los diagramas de interacción.",
+    tags: ["DCD", "Diagrama de clases", "Atributos", "Métodos", "Diseño estructural"]
+  },
+  {
+    num: "Cap. 22",
+    title: "GRASP: más patrones para asignar responsabilidades",
+    badge: "b-core", bl: "Núcleo",
+    semanas: ["Clase 5"],
+    desc: "Completa el catálogo GRASP con Polimorfismo, Fabricación Pura, Indirección y Variaciones Protegidas. Sin este capítulo el estudio de GRASP queda incompleto, ya que los 9 patrones juntos son los que pide la Clase 5.",
+    unidad: "Unidad 3 — patrones de diseño",
+    relacionados: "Par inseparable del Cap. 16. Variaciones Protegidas anticipa los patrones GoF del Cap. 23.",
+    tags: ["GRASP avanzado", "Polimorfismo", "Fabricación pura", "Indirección", "Variaciones protegidas"]
+  },
+  {
+    num: "Cap. 23",
+    title: "Diseño de realizaciones de CU con patrones GoF",
+    badge: "b-ext", bl: "Extensión GoF",
+    semanas: ["Semana 3 prog."],
+    desc: "Aplica patrones de la 'Gang of Four' (Adaptador, Factoría, Singleton, Estrategia, Composite, Fachada, Observador) sobre casos de uso concretos. Corresponde a la Unidad 3 del programa, que pide patrones creacionales, estructurales y de comportamiento.",
+    unidad: "Unidad 3 — patrones GoF creacionales, estructurales y de comportamiento",
+    relacionados: "Requiere dominar Cap. 16 y 22 (GRASP) como base. Los patrones GoF son la profundización de GRASP para casos más complejos.",
+    tags: ["GoF", "Adaptador", "Factoría", "Singleton", "Estrategia", "Composite", "Fachada", "Observador"]
+  },
+  {
+    num: "Cap. 29",
+    title: "Modelado del comportamiento con diagramas de estado",
+    badge: "b-comp", bl: "Complementario",
+    semanas: ["Clase 4", "Clase 5"],
+    desc: "Explica la notación y uso del Diagrama de Estado (máquinas de estado): estados, transiciones, eventos, guardas y acciones. Pedido explícitamente en la Clase 4 del bloc de notas y refuerza la vista de comportamiento de Clase 5.",
+    unidad: "Unidad 1 — vistas de comportamiento del diseño",
+    relacionados: "Se usa junto al diagrama de secuencia del Cap. 15 para describir el comportamiento de clases que tienen ciclos de vida complejos.",
+    tags: ["Diagrama de estado", "Estados", "Transiciones", "Comportamiento"]
+  },
+  {
+    num: "Cap. 30",
+    title: "Diseño de la arquitectura lógica con patrones",
+    badge: "b-arch", bl: "Arquitectura",
+    semanas: ["Semana 4 prog."],
+    desc: "Introduce el patrón de arquitectura por Capas (Presentation, Application/Domain, Services, Infrastructure) y el Principio de Separación Modelo-Vista (precursor de MVC). Directamente alineado con la Unidad 2 del programa.",
+    unidad: "Unidad 2 — atributos de calidad y restricciones del diseño",
+    relacionados: "Se complementa con Cap. 32 (análisis arquitectural). Juntos cubren toda la Unidad 2.",
+    tags: ["Capas", "MVC", "Arquitectura lógica", "Separación modelo-vista"]
+  },
+  {
+    num: "Cap. 32",
+    title: "Introducción al análisis arquitectural y el SAD",
+    badge: "b-arch", bl: "Arquitectura",
+    semanas: ["Semana 4 prog."],
+    desc: "Explica cómo identificar y analizar los factores de la arquitectura: atributos de calidad (rendimiento, seguridad, modificabilidad) y restricciones técnicas. Corresponde al contenido de la Unidad 2 sobre atributos de calidad.",
+    unidad: "Unidad 2 — atributos de calidad y restricciones del diseño",
+    relacionados: "Par natural del Cap. 30. El 30 da la solución (capas), el 32 enseña a identificar los problemas que esa solución resuelve.",
+    tags: ["Análisis arquitectural", "Atributos de calidad", "SAD", "Restricciones"]
+  }
+];
+
+function build() {
+  const el = document.getElementById('caps');
+  caps.forEach((c, i) => {
+    const div = document.createElement('div');
+    div.className = 'cap';
+    div.innerHTML = `
+      <div class="cap-header" onclick="toggle(${i})">
+        <span class="cap-num">${c.num}</span>
+        <span class="cap-title">${c.title}</span>
+        <span class="badge ${c.badge}">${c.bl}</span>
+        <span class="chev" id="chev-${i}">▸</span>
+      </div>
+      <div class="cap-body" id="body-${i}">
+        <p>${c.desc}</p>
+        <p><strong style="color:var(--color-text-secondary)">Unidad del programa:</strong> ${c.unidad}</p>
+        <p class="rel"><strong>Relación con otros caps.:</strong> ${c.relacionados}</p>
+        <div class="tag-row">
+          ${c.semanas.map(s=>`<span class="semana-chip">${s}</span>`).join('')}
+          ${c.tags.map(t=>`<span class="tag">${t}</span>`).join('')}
+        </div>
+      </div>
+    `;
+    el.appendChild(div);
+  });
+}
+
+function toggle(i) {
+  const b = document.getElementById('body-'+i);
+  const ch = document.getElementById('chev-'+i);
+  const open = b.classList.toggle('open');
+  ch.textContent = open ? '▾' : '▸';
+}
+
+build();
+</script>
